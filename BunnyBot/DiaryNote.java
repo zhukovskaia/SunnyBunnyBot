@@ -33,12 +33,6 @@ public class DiaryNote implements Serializable {
     public void setDate(LocalDateTime date) { this.date = date; }
     public void setContent(String content) { this.content = content; }
 
-    @Override
-    public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-        return String.format("[%s] %s", date.format(formatter), content);
-    }
-
 
     public String toFormattedString(int index) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
