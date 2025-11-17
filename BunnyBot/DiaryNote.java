@@ -39,7 +39,7 @@ public class DiaryNote implements Serializable {
         return String.format("[%s] %s", date.format(formatter), content);
     }
 
-    // Дополнительный метод для красивого отображения в списке
+
     public String toFormattedString(int index) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         return String.format("%d. 📅 %s\n   📝 %s", index, date.format(formatter), content);
