@@ -11,6 +11,8 @@ public class CommandFactory {
         commands.put("📖 мои записи", new ShowNotesCommand());
         commands.put("🗑️ удалить запись", new DeleteNoteCommand());
         commands.put("📊 количество записей", new NoteCountCommand());
+        commands.put("/help", new HelpCommand());
+        commands.put("❓ помощь", new HelpCommand());
     }
 
     public static Command getCommand(String commandText) {
