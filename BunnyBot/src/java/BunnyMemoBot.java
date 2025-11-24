@@ -25,11 +25,7 @@ public class BunnyMemoBot extends TelegramLongPollingBot {
                 System.out.println("✅ Токен загружен из bot-config.properties");
                 return token;
             }
-        } catch (Exception e) {
-            System.out.println("⚠️ Файл bot-config.properties не найден, использую токен по умолчанию");
-        }
-
-        return "8450494522:AAGMcoKqR2FnB5PGekoubtRTaP0IeTzIATk";
+        
     }
 
     @Override
