@@ -1,9 +1,6 @@
-FROM maven:3.8.4-amazoncorretto-17 AS build
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 COPY . .
+RUN apk add --no-cache maven
 RUN mvn clean package -DskipTests
-
-FROM amazoncorretto:17-alpine
-WORKDIR /app
-COPY --from=build /app/target/bunny-memo-bot-1.0-SNAPSHOT.jar app.jar
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "target/bunny-memo-bot-1.0-SNAPSHOT.jar"]
