@@ -9,27 +9,47 @@ import java.util.Properties;
 public class BunnyMemoBot extends TelegramLongPollingBot {
     private DiaryStorage diaryStorage;
     private String botToken;
+    private String botUsername;
 
     public BunnyMemoBot() {
         this.diaryStorage = new DiaryStorage();
-        this.botToken = loadTokenFromConfig();
+        this.botToken = loadToken();
+        this.botUsername = loadUsername();
     }
 
-    private String loadTokenFromConfig() {
+    private String loadToken() {
+        String token = System.getenv("BOT_TOKEN");
+
+        if (token != null && !token.isEmpty()) {
+            System.out.println("✅ Токен загружен из переменных окружения");
+            return token;
+        }
+
         try (FileInputStream input = new FileInputStream("bot-config.properties")) {
             Properties prop = new Properties();
             prop.load(input);
-            String token = prop.getProperty("bot.token");
+            token = prop.getProperty("bot.token");
 
             if (token != null && !token.isEmpty()) {
                 System.out.println("✅ Токен загружен из bot-config.properties");
                 return token;
             }
         } catch (Exception e) {
-            System.out.println("❌ Ошибка загрузки токена: " + e.getMessage());
+            System.out.println("❌ Ошибка загрузки токена из файла: " + e.getMessage());
         }
 
-        throw new RuntimeException("Не удалось загрузить токен бота");
+        throw new RuntimeException("Не удалось загрузить токен бота. Установите переменную окружения BOT_TOKEN");
+    }
+
+    private String loadUsername() {
+        String username = System.getenv("BOT_USERNAME");
+
+        if (username != null && !username.isEmpty()) {
+            System.out.println("✅ Username загружен из переменных окружения: " + username);
+            return username;
+        }
+
+        return "BunnyMemoBot";
     }
 
     @Override
@@ -117,7 +137,7 @@ public class BunnyMemoBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "BunnyMemoBot";
+        return botUsername;
     }
 
     @Override
