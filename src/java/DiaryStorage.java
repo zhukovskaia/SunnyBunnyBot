@@ -4,9 +4,17 @@ import java.io.*;
 
 public class DiaryStorage {
     private Map<Long, List<DiaryNote>> userDiaries = new HashMap<>();
-    private final String DATA_FILE = "diary_data.ser";
+    private String dataFile;
+
 
     public DiaryStorage() {
+        this.dataFile = "diary_data.ser";
+        loadData();
+    }
+
+
+    public DiaryStorage(String testFileName) {
+        this.dataFile = testFileName;
         loadData();
     }
 
@@ -20,9 +28,8 @@ public class DiaryStorage {
         return userDiaries.getOrDefault(chatId, new ArrayList<>());
     }
 
-
     private void saveData() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(DATA_FILE))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(dataFile))) {
             oos.writeObject(userDiaries);
         } catch (IOException e) {
             System.err.println("Ошибка сохранения: " + e.getMessage());
@@ -31,35 +38,34 @@ public class DiaryStorage {
 
     @SuppressWarnings("unchecked")
     private void loadData() {
-        File dataFile = new File(DATA_FILE);
+        File dataFileObj = new File(dataFile);
 
-        if (!dataFile.exists()) {
-            System.out.println("📁 Файл данных не найден, создаем новую коллекцию");
+        if (!dataFileObj.exists()) {
+            System.out.println("📁 Файл данных " + dataFile + " не найден, создаем новую коллекцию");
             userDiaries = new HashMap<>();
             return;
         }
 
-
-        if (dataFile.length() == 0) {
-            System.out.println("📁 Файл данных пустой, создаем новую коллекцию");
+        if (dataFileObj.length() == 0) {
+            System.out.println("📁 Файл данных " + dataFile + " пустой, создаем новую коллекцию");
             userDiaries = new HashMap<>();
             return;
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(DATA_FILE))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(dataFile))) {
             Object loadedData = ois.readObject();
             if (loadedData instanceof Map) {
                 userDiaries = (Map<Long, List<DiaryNote>>) loadedData;
-                System.out.println("✅ Данные успешно загружены, пользователей: " + userDiaries.size());
+                System.out.println("✅ Данные успешно загружены из " + dataFile + ", пользователей: " + userDiaries.size());
             } else {
-                System.out.println("⚠️ Неверный формат данных, создаем новую коллекцию");
+                System.out.println("⚠️ Неверный формат данных в " + dataFile + ", создаем новую коллекцию");
                 userDiaries = new HashMap<>();
             }
         } catch (FileNotFoundException e) {
-            System.out.println("📁 Файл данных не найден, создаем новую коллекцию");
+            System.out.println("📁 Файл данных " + dataFile + " не найден, создаем новую коллекцию");
             userDiaries = new HashMap<>();
         } catch (IOException e) {
-            System.err.println("❌ Ошибка чтения файла: " + e.getMessage());
+            System.err.println("❌ Ошибка чтения файла " + dataFile + ": " + e.getMessage());
             System.out.println("Создаем новую коллекцию");
             userDiaries = new HashMap<>();
         } catch (ClassNotFoundException e) {
@@ -85,5 +91,11 @@ public class DiaryStorage {
 
     public int getNoteCount(Long chatId) {
         return userDiaries.getOrDefault(chatId, new ArrayList<>()).size();
+    }
+
+
+    public void clearAllData() {
+        userDiaries.clear();
+        saveData();
     }
 }
